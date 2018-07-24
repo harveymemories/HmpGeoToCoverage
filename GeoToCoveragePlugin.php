@@ -20,7 +20,13 @@ class GeoToCoveragePlugin extends Omeka_Plugin_AbstractPlugin
         $item->deleteElementTextsByElementId(array($coverageElement->id));
 
         if ($location) {
-            $latlon = sprintf('%+f',$location->latitude).sprintf('%+f',$location->longitude).'/';
+            $lon = $location->longitude;
+            if ((-100 < $lon) && ($lon < 100)) {
+                $fmt = "%+'0" . (strlen(sprintf('%+f', $lon)) + 1) . "f";
+            } else {
+                $fmt = "%+f";
+            }
+            $latlon = sprintf('%+f',$location->latitude).sprintf($fmt, $lon).'/';
             $item->addTextForElement($coverageElement, $latlon);
             if ($location->address) {
                 $item->addTextForElement($coverageElement, $location->address);
